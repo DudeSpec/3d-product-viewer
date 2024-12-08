@@ -5,74 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Product Viewer</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+        body { margin: 0; }
+        canvas { display: block; }
         #3dViewer {
-            width: 100%;
+            width: 100vw;
             height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .controls {
+        #menu {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 15px;
+            top: 20px;
+            left: 20px;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
             border-radius: 8px;
         }
-        .control-group {
+        select, label {
             margin-bottom: 10px;
-        }
-        select {
-            padding: 5px;
-            margin-top: 5px;
         }
     </style>
 </head>
 <body>
     <div id="3dViewer"></div>
-    <div class="controls">
-        <div class="control-group">
-            <label for="handleTopWood">Handle Top Wood</label>
-            <select id="handleTopWood">
-                <option value="0">Black Walnut</option>
-                <option value="1">Burl 1</option>
-                <option value="2">Burl 2</option>
-                <option value="3">Hickory</option>
-                <option value="4">Mahogany</option>
-                <option value="5">Oak</option>
-                <option value="6">Purpleheart</option>
-            </select>
-        </div>
-        <div class="control-group">
-            <label for="handleBottomWood">Handle Bottom Wood</label>
-            <select id="handleBottomWood">
-                <option value="0">Black Walnut</option>
-                <option value="1">Burl 1</option>
-                <option value="2">Burl 2</option>
-                <option value="3">Hickory</option>
-                <option value="4">Mahogany</option>
-                <option value="5">Oak</option>
-                <option value="6">Purpleheart</option>
-            </select>
-        </div>
-        <div class="control-group">
-            <label for="titaniumOption">Titanium Color</label>
-            <select id="titaniumOption">
-                <option value="0">Titanium 1</option>
-                <option value="1">Titanium 2</option>
-                <option value="2">Titanium 3</option>
-                <option value="3">Titanium 4</option>
-                <option value="4">Titanium 5</option>
-            </select>
-        </div>
+    
+    <div id="menu">
+        <h3>Select Wood Options</h3>
+        <label for="handleTopWood">Handle Top:</label>
+        <select id="handleTopWood">
+            <option value="0">Black Walnut</option>
+            <option value="1">Burl 1</option>
+            <option value="2">Burl 2</option>
+            <option value="3">Hickory</option>
+            <option value="4">Mahogany</option>
+            <option value="5">Oak</option>
+            <option value="6">Purpleheart</option>
+        </select>
+        
+        <label for="handleBottomWood">Handle Bottom:</label>
+        <select id="handleBottomWood">
+            <option value="0">Black Walnut</option>
+            <option value="1">Burl 1</option>
+            <option value="2">Burl 2</option>
+            <option value="3">Hickory</option>
+            <option value="4">Mahogany</option>
+            <option value="5">Oak</option>
+            <option value="6">Purpleheart</option>
+        </select>
+
+        <h3>Select Titanium Color</h3>
+        <label for="titaniumOption">Titanium Color:</label>
+        <select id="titaniumOption">
+            <option value="0">Titanium 1</option>
+            <option value="1">Titanium 2</option>
+            <option value="2">Titanium 3</option>
+            <option value="3">Titanium 4</option>
+            <option value="4">Titanium 5</option>
+        </select>
     </div>
 
+    <!-- Load Three.js and GLTFLoader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.min.js"></script>
 
     <script>
         // Setup for Three.js
@@ -100,20 +97,20 @@
         // Load textures for wood
         const textureLoader = new THREE.TextureLoader();
         const woodTextures = [
-            textureLoader.load('textures/Black_Walnut.jpg'),
-            textureLoader.load('textures/burl1.jpg'),
-            textureLoader.load('textures/burl2.jpg'),
-            textureLoader.load('textures/Hickory.jpg'),
-            textureLoader.load('textures/Mahogany.jpg'),
-            textureLoader.load('textures/Oak.jpg'),
-            textureLoader.load('textures/Purpleheart.jpg')
+            textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Black_Walnut.jpg'),
+            textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/burl1.jpg'),
+            textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/burl2.jpg'),
+            textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Hickory.jpg'),
+            textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Mahogany.jpg'),
+            textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Oak.jpg'),
+            textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Purpleheart.jpg')
         ];
 
         // Load model using GLTFLoader
         const loader = new THREE.GLTFLoader();
         let model;
 
-        loader.load('models/Ratchet.gltf', function(gltf) {
+        loader.load('https://dudespec.github.io/3d-product-viewer/models/Ratchet.gltf', function(gltf) {
             model = gltf.scene;
             scene.add(model);
             camera.position.set(0, 1, 5);
@@ -191,13 +188,6 @@
             controls.update();  // Update controls for rotation
             renderer.render(scene, camera);
         }
-
-        // Resize the renderer and camera on window resize
-        window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-        });
     </script>
 </body>
 </html>
