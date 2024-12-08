@@ -17,10 +17,10 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 5, 5).normalize();
 scene.add(directionalLight);
 
-// Load model using GLTFLoader
+// Load the Ratchet model using GLTFLoader
 const loader = new THREE.GLTFLoader();
 let model;
-loader.load('models/model.glb', function(gltf) {
+loader.load('models/Ratchet.glb', function(gltf) {
     model = gltf.scene;
     scene.add(model);
     render();
@@ -94,3 +94,10 @@ function render() {
     controls.update();
     renderer.render(scene, camera);
 }
+
+// Handle window resizing for mobile responsiveness
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+});
