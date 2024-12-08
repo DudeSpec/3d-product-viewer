@@ -16,60 +16,60 @@
             width: 100%;
             height: 100vh;
         }
-        #controls {
+        #textureSelector {
             position: absolute;
             top: 10px;
             left: 10px;
             z-index: 10;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            max-width: 250px;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
+            background-color: white;
+            padding: 10px;
         }
         select {
-            width: 100%;
-            padding: 5px;
+            margin: 5px;
         }
     </style>
 </head>
 <body>
     <div id="3dViewer"></div>
-    <div id="controls">
-        <label for="textureHandleTop">Choose Handle Top Texture:</label>
-        <select id="textureHandleTop">
-            <option value="textures/BlackWalnut.jpg">Black Walnut</option>
-            <option value="textures/Burl1.jpg">Burl1</option>
-            <option value="textures/Burl2.jpg">Burl2</option>
-            <option value="textures/Hickory.jpg">Hickory</option>
-            <option value="textures/Mahogany.jpg">Mahogany</option>
-            <option value="textures/Oak.jpg">Oak</option>
-            <option value="textures/Purpleheart.jpg">Purpleheart</option>
+    <div id="textureSelector">
+        <label for="handleTopTexture">Handle Top Texture:</label>
+        <select id="handleTopTexture">
+            <option value="0">Black Walnut</option>
+            <option value="1">Burl1</option>
+            <option value="2">Hickory</option>
+            <option value="3">Mahogany</option>
+            <option value="4">Oak</option>
+            <option value="5">Purpleheart</option>
         </select>
 
-        <label for="textureHandleBottom">Choose Handle Bottom Texture:</label>
-        <select id="textureHandleBottom">
-            <option value="textures/BlackWalnut.jpg">Black Walnut</option>
-            <option value="textures/Burl1.jpg">Burl1</option>
-            <option value="textures/Burl2.jpg">Burl2</option>
-            <option value="textures/Hickory.jpg">Hickory</option>
-            <option value="textures/Mahogany.jpg">Mahogany</option>
-            <option value="textures/Oak.jpg">Oak</option>
-            <option value="textures/Purpleheart.jpg">Purpleheart</option>
+        <label for="handleBottomTexture">Handle Bottom Texture:</label>
+        <select id="handleBottomTexture">
+            <option value="0">Black Walnut</option>
+            <option value="1">Burl1</option>
+            <option value="2">Hickory</option>
+            <option value="3">Mahogany</option>
+            <option value="4">Oak</option>
+            <option value="5">Purpleheart</option>
         </select>
 
-        <label for="titaniumColor">Choose Titanium Color:</label>
-        <select id="titaniumColor">
-            <option value="0">Natural</option>
-            <option value="1">Blue anodized</option>
-            <option value="2">Bronze anodized</option>
-            <option value="3">Gold anodized</option>
-            <option value="4">Purple anodized</option>
-            <option value="5">Black anodized</option>
+        <label for="caseTopTexture">Case Top Texture:</label>
+        <select id="caseTopTexture">
+            <option value="0">Black Walnut</option>
+            <option value="1">Burl1</option>
+            <option value="2">Hickory</option>
+            <option value="3">Mahogany</option>
+            <option value="4">Oak</option>
+            <option value="5">Purpleheart</option>
+        </select>
+
+        <label for="caseBottomTexture">Case Bottom Texture:</label>
+        <select id="caseBottomTexture">
+            <option value="0">Black Walnut</option>
+            <option value="1">Burl1</option>
+            <option value="2">Hickory</option>
+            <option value="3">Mahogany</option>
+            <option value="4">Oak</option>
+            <option value="5">Purpleheart</option>
         </select>
     </div>
 
@@ -100,97 +100,81 @@
         let model;
 
         loader.load(
-            'path_to_your_model.glb',  // Replace with your actual model path
-            function (gltf) {
+            'https://dudespec.github.io/3d-product-viewer/models/Ratchet.gltf',  // Model URL
+            function(gltf) {
                 model = gltf.scene;
                 scene.add(model);
-                model.scale.set(2, 2, 2);
-                camera.position.set(0, 1, 5);
+
+                // Grab the materials for each part of the model by their names
+                const handleTopMaterial = model.getObjectByName('Handle top').material; // Handle Top
+                const handleBottomMaterial = model.getObjectByName('Handle Bottom').material; // Handle Bottom
+                const caseTopMaterial = model.getObjectByName('Case Top').material; // Case Top
+                const caseBottomMaterial = model.getObjectByName('Case Bottom').material; // Case Bottom
+
+                // Function to switch textures for a given part's material
+                function setTextureForPart(part, textureIndex) {
+                    if (part === 'Handle top') {
+                        handleTopMaterial.BlackWalnut_Factor = (textureIndex === 0) ? 1 : 0;
+                        handleTopMaterial.Burl1_Factor = (textureIndex === 1) ? 1 : 0;
+                        handleTopMaterial.Hickory_Factor = (textureIndex === 2) ? 1 : 0;
+                        handleTopMaterial.Mahogany_Factor = (textureIndex === 3) ? 1 : 0;
+                        handleTopMaterial.Oak_Factor = (textureIndex === 4) ? 1 : 0;
+                        handleTopMaterial.Purpleheart_Factor = (textureIndex === 5) ? 1 : 0;
+                    } else if (part === 'Handle Bottom') {
+                        handleBottomMaterial.BlackWalnut_Factor = (textureIndex === 0) ? 1 : 0;
+                        handleBottomMaterial.Burl1_Factor = (textureIndex === 1) ? 1 : 0;
+                        handleBottomMaterial.Hickory_Factor = (textureIndex === 2) ? 1 : 0;
+                        handleBottomMaterial.Mahogany_Factor = (textureIndex === 3) ? 1 : 0;
+                        handleBottomMaterial.Oak_Factor = (textureIndex === 4) ? 1 : 0;
+                        handleBottomMaterial.Purpleheart_Factor = (textureIndex === 5) ? 1 : 0;
+                    } else if (part === 'Case Top') {
+                        caseTopMaterial.BlackWalnut_Factor = (textureIndex === 0) ? 1 : 0;
+                        caseTopMaterial.Burl1_Factor = (textureIndex === 1) ? 1 : 0;
+                        caseTopMaterial.Hickory_Factor = (textureIndex === 2) ? 1 : 0;
+                        caseTopMaterial.Mahogany_Factor = (textureIndex === 3) ? 1 : 0;
+                        caseTopMaterial.Oak_Factor = (textureIndex === 4) ? 1 : 0;
+                        caseTopMaterial.Purpleheart_Factor = (textureIndex === 5) ? 1 : 0;
+                    } else if (part === 'Case Bottom') {
+                        caseBottomMaterial.BlackWalnut_Factor = (textureIndex === 0) ? 1 : 0;
+                        caseBottomMaterial.Burl1_Factor = (textureIndex === 1) ? 1 : 0;
+                        caseBottomMaterial.Hickory_Factor = (textureIndex === 2) ? 1 : 0;
+                        caseBottomMaterial.Mahogany_Factor = (textureIndex === 3) ? 1 : 0;
+                        caseBottomMaterial.Oak_Factor = (textureIndex === 4) ? 1 : 0;
+                        caseBottomMaterial.Purpleheart_Factor = (textureIndex === 5) ? 1 : 0;
+                    }
+
+                    // Make sure to update the materials after changing the Factor values
+                    handleTopMaterial.needsUpdate = true;
+                    handleBottomMaterial.needsUpdate = true;
+                    caseTopMaterial.needsUpdate = true;
+                    caseBottomMaterial.needsUpdate = true;
+                }
+
+                // UI listeners for texture changes
+                document.getElementById('handleTopTexture').addEventListener('change', function () {
+                    const textureIndex = parseInt(this.value);
+                    setTextureForPart('Handle top', textureIndex);
+                });
+                document.getElementById('handleBottomTexture').addEventListener('change', function () {
+                    const textureIndex = parseInt(this.value);
+                    setTextureForPart('Handle Bottom', textureIndex);
+                });
+                document.getElementById('caseTopTexture').addEventListener('change', function () {
+                    const textureIndex = parseInt(this.value);
+                    setTextureForPart('Case Top', textureIndex);
+                });
+                document.getElementById('caseBottomTexture').addEventListener('change', function () {
+                    const textureIndex = parseInt(this.value);
+                    setTextureForPart('Case Bottom', textureIndex);
+                });
+
                 render();
             },
             undefined,
-            function (error) {
+            function(error) {
                 console.error("Error loading model:", error);
             }
         );
-
-        // Function to load textures
-        function loadTexture(textureUrl) {
-            const textureLoader = new THREE.TextureLoader();
-            return textureLoader.load(textureUrl);
-        }
-
-        // Function to change wood texture
-        function changeWoodTexture(partName, textureUrl) {
-            if (model) {
-                const texture = loadTexture(textureUrl);
-                model.traverse(function (child) {
-                    if (child.isMesh && child.name === partName) {
-                        child.material.map = texture;
-                        child.material.needsUpdate = true;
-                    }
-                });
-            }
-        }
-
-        // Function to change titanium color based on selected anodization
-        function changeTitaniumColor(anodizationIndex) {
-            let anodizedColor;
-
-            switch (anodizationIndex) {
-                case 0: // Natural (default titanium color)
-                    anodizedColor = new THREE.Color(1, 1, 1); // No color change
-                    break;
-                case 1: // Blue anodized
-                    anodizedColor = new THREE.Color(0.3, 0.4, 1); // Light blue tint
-                    break;
-                case 2: // Bronze anodized
-                    anodizedColor = new THREE.Color(0.6, 0.3, 0.1); // Bronze tint
-                    break;
-                case 3: // Gold anodized
-                    anodizedColor = new THREE.Color(1, 0.8, 0); // Gold tint
-                    break;
-                case 4: // Purple anodized
-                    anodizedColor = new THREE.Color(0.5, 0, 1); // Purple tint
-                    break;
-                case 5: // Black anodized
-                    anodizedColor = new THREE.Color(0.2, 0.2, 0.2); // Dark tint
-                    break;
-                default:
-                    anodizedColor = new THREE.Color(1, 1, 1); // Default to natural
-                    break;
-            }
-
-            // Apply anodization color to titanium parts
-            const titaniumParts = [
-                'Top Plate 1', 'Top Plate 2', 'Top Plate 3', 'Top Handle Nut', 'Top Handle Bolt',
-                'Center Handle Nut', 'Center Handle Bolt', 'Bottom Handle Nut', 'Bottom Handle Bolt',
-                'Cover Plate', 'Cover Plate Screw L', 'Cover Plate Screw R', 'Center', 'Bottom Plate 1', 'Bottom Plate 2'
-            ];
-
-            titaniumParts.forEach(partName => {
-                model.traverse(function (child) {
-                    if (child.isMesh && child.name === partName) {
-                        child.material.color.set(anodizedColor);
-                        child.material.needsUpdate = true;
-                    }
-                });
-            });
-        }
-
-        // Event listeners for texture changes
-        document.getElementById('textureHandleTop').addEventListener('change', function () {
-            changeWoodTexture('Handle top', this.value);
-        });
-        document.getElementById('textureHandleBottom').addEventListener('change', function () {
-            changeWoodTexture('Handle Bottom', this.value);
-        });
-        // Add more event listeners for other wood components if needed
-
-        // Event listener for titanium color change
-        document.getElementById('titaniumColor').addEventListener('change', function () {
-            changeTitaniumColor(parseInt(this.value, 10));
-        });
 
         // Render the scene
         function render() {
