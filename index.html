@@ -21,15 +21,25 @@
             top: 10px;
             left: 10px;
             z-index: 10;
-            background-color: white;
-            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 250px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        select {
+            width: 100%;
+            padding: 5px;
         }
     </style>
 </head>
 <body>
     <div id="3dViewer"></div>
     <div id="controls">
-        <!-- Wood texture selectors for parts -->
         <label for="textureHandleTop">Choose Handle Top Texture:</label>
         <select id="textureHandleTop">
             <option value="textures/BlackWalnut.jpg">Black Walnut</option>
@@ -39,7 +49,7 @@
             <option value="textures/Mahogany.jpg">Mahogany</option>
             <option value="textures/Oak.jpg">Oak</option>
             <option value="textures/Purpleheart.jpg">Purpleheart</option>
-        </select><br>
+        </select>
 
         <label for="textureHandleBottom">Choose Handle Bottom Texture:</label>
         <select id="textureHandleBottom">
@@ -50,11 +60,8 @@
             <option value="textures/Mahogany.jpg">Mahogany</option>
             <option value="textures/Oak.jpg">Oak</option>
             <option value="textures/Purpleheart.jpg">Purpleheart</option>
-        </select><br>
+        </select>
 
-        <!-- Add similar dropdowns for other parts like Case Top, Case Bottom, etc. -->
-
-        <!-- Titanium anodization color selectors -->
         <label for="titaniumColor">Choose Titanium Color:</label>
         <select id="titaniumColor">
             <option value="0">Natural</option>
@@ -63,7 +70,7 @@
             <option value="3">Gold anodized</option>
             <option value="4">Purple anodized</option>
             <option value="5">Black anodized</option>
-        </select><br>
+        </select>
     </div>
 
     <script>
