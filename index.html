@@ -5,64 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Product Viewer</title>
     <style>
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-        }
-        canvas { 
-            display: block; 
-            width: 100%; 
-            height: 100%; 
-        }
-        #menu { 
-            position: absolute; 
-            top: 20px; 
-            left: 20px; 
-            background: rgba(255, 255, 255, 0.7); 
-            padding: 10px; 
-            z-index: 10;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        #menu select {
-            margin: 5px 0;
-        }
+        body { margin: 0; overflow: hidden; }
+        #3dViewer { width: 100%; height: 100vh; }
+        #controls { position: absolute; top: 10px; left: 10px; z-index: 1; background-color: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
-    <div id="menu">
-        <div>
-            <label for="woodOption">Wood Variant:</label>
-            <select id="woodOption">
-                <option value="0">Black Walnut</option>
-                <option value="1">Burl 1</option>
-                <option value="2">Burl 2</option>
-                <option value="3">Hickory</option>
-                <option value="4">Mahogany</option>
-                <option value="5">Oak</option>
-                <option value="6">Purpleheart</option>
-            </select>
-        </div>
-        <div>
-            <label for="titaniumOption">Titanium Anodization Color:</label>
-            <select id="titaniumOption">
-                <option value="0">Natural</option>
-                <option value="1">Blue</option>
-                <option value="2">Bronze</option>
-                <option value="3">Gold</option>
-                <option value="4">Purple</option>
-                <option value="5">Black</option>
-            </select>
-        </div>
+    <div id="controls">
+        <h3>Customize Parts</h3>
+
+        <!-- Dropdown for Handle Top -->
+        <label for="handleTopWood">Handle Top Wood:</label>
+        <select id="handleTopWood">
+            <option value="0">Black Walnut</option>
+            <option value="1">Burl 1</option>
+            <option value="2">Burl 2</option>
+            <option value="3">Hickory</option>
+            <option value="4">Mahogany</option>
+            <option value="5">Oak</option>
+            <option value="6">Purpleheart</option>
+        </select><br>
+
+        <!-- Dropdown for Handle Bottom -->
+        <label for="handleBottomWood">Handle Bottom Wood:</label>
+        <select id="handleBottomWood">
+            <option value="0">Black Walnut</option>
+            <option value="1">Burl 1</option>
+            <option value="2">Burl 2</option>
+            <option value="3">Hickory</option>
+            <option value="4">Mahogany</option>
+            <option value="5">Oak</option>
+            <option value="6">Purpleheart</option>
+        </select><br>
+
+        <!-- Dropdown for other parts here... -->
+
+        <!-- Dropdown for Titanium Color -->
+        <label for="titaniumOption">Titanium Color:</label>
+        <select id="titaniumOption">
+            <option value="0">Titanium Color 1</option>
+            <option value="1">Titanium Color 2</option>
+            <option value="2">Titanium Color 3</option>
+            <option value="3">Titanium Color 4</option>
+            <option value="4">Titanium Color 5</option>
+        </select>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/examples/js/controls/OrbitControls.js"></script>
+    <div id="3dViewer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js"></script>
+
     <script src="app.js"></script>
 </body>
 </html>
