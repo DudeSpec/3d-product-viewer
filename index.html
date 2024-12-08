@@ -4,32 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Product Viewer</title>
-    <!-- Load Three.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Load OrbitControls from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <!-- Load GLTFLoader from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #3dViewer {
+            width: 100%;
+            height: 100vh;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background-color: white;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div id="3dViewer" style="width: 100%; height: 100vh;"></div>
+    <div id="3dViewer"></div>
+    <div id="controls">
+        <!-- Wood texture selectors for parts -->
+        <label for="textureHandleTop">Choose Handle Top Texture:</label>
+        <select id="textureHandleTop">
+            <option value="textures/BlackWalnut.jpg">Black Walnut</option>
+            <option value="textures/Burl1.jpg">Burl1</option>
+            <option value="textures/Burl2.jpg">Burl2</option>
+            <option value="textures/Hickory.jpg">Hickory</option>
+            <option value="textures/Mahogany.jpg">Mahogany</option>
+            <option value="textures/Oak.jpg">Oak</option>
+            <option value="textures/Purpleheart.jpg">Purpleheart</option>
+        </select><br>
+
+        <label for="textureHandleBottom">Choose Handle Bottom Texture:</label>
+        <select id="textureHandleBottom">
+            <option value="textures/BlackWalnut.jpg">Black Walnut</option>
+            <option value="textures/Burl1.jpg">Burl1</option>
+            <option value="textures/Burl2.jpg">Burl2</option>
+            <option value="textures/Hickory.jpg">Hickory</option>
+            <option value="textures/Mahogany.jpg">Mahogany</option>
+            <option value="textures/Oak.jpg">Oak</option>
+            <option value="textures/Purpleheart.jpg">Purpleheart</option>
+        </select><br>
+
+        <!-- Add similar dropdowns for other parts like Case Top, Case Bottom, etc. -->
+
+        <!-- Titanium anodization color selectors -->
+        <label for="titaniumColor">Choose Titanium Color:</label>
+        <select id="titaniumColor">
+            <option value="0">Natural</option>
+            <option value="1">Blue anodized</option>
+            <option value="2">Bronze anodized</option>
+            <option value="3">Gold anodized</option>
+            <option value="4">Purple anodized</option>
+            <option value="5">Black anodized</option>
+        </select><br>
+    </div>
 
     <script>
-        // Setup for Three.js
+        // Set up Three.js scene
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('3dViewer').appendChild(renderer.domElement);
 
-        // OrbitControls for interactivity
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.25;
         controls.screenSpacePanning = false;
         controls.maxPolarAngle = Math.PI / 2;
 
-        // Lighting setup
+        // Add lighting to the scene
         const light = new THREE.AmbientLight(0x404040, 5);  // Ambient light
         scene.add(light);
 
@@ -37,34 +88,111 @@
         directionalLight.position.set(5, 5, 5).normalize();
         scene.add(directionalLight);
 
-        // Load model using GLTFLoader
-        const loader = new THREE.GLTFLoader(); // Instantiate the loader
+        // Load the model
+        const loader = new THREE.GLTFLoader();
         let model;
 
         loader.load(
-            'https://dudespec.github.io/3d-product-viewer/models/Ratchet.gltf',  // Model URL
-            function(gltf) {
-                model = gltf.scene;  // Get the loaded model
+            'path_to_your_model.glb',  // Replace with your actual model path
+            function (gltf) {
+                model = gltf.scene;
                 scene.add(model);
-                model.scale.set(2, 2, 2);  // Scale up the model if it's too small
-                camera.position.set(0, 1, 5);  // Set camera position to view the model clearly
-                console.log("Model loaded successfully");
+                model.scale.set(2, 2, 2);
+                camera.position.set(0, 1, 5);
                 render();
             },
-            undefined,  // Progress callback (can be omitted)
-            function(error) {
+            undefined,
+            function (error) {
                 console.error("Error loading model:", error);
             }
         );
 
-        // Render loop
+        // Function to load textures
+        function loadTexture(textureUrl) {
+            const textureLoader = new THREE.TextureLoader();
+            return textureLoader.load(textureUrl);
+        }
+
+        // Function to change wood texture
+        function changeWoodTexture(partName, textureUrl) {
+            if (model) {
+                const texture = loadTexture(textureUrl);
+                model.traverse(function (child) {
+                    if (child.isMesh && child.name === partName) {
+                        child.material.map = texture;
+                        child.material.needsUpdate = true;
+                    }
+                });
+            }
+        }
+
+        // Function to change titanium color based on selected anodization
+        function changeTitaniumColor(anodizationIndex) {
+            let anodizedColor;
+
+            switch (anodizationIndex) {
+                case 0: // Natural (default titanium color)
+                    anodizedColor = new THREE.Color(1, 1, 1); // No color change
+                    break;
+                case 1: // Blue anodized
+                    anodizedColor = new THREE.Color(0.3, 0.4, 1); // Light blue tint
+                    break;
+                case 2: // Bronze anodized
+                    anodizedColor = new THREE.Color(0.6, 0.3, 0.1); // Bronze tint
+                    break;
+                case 3: // Gold anodized
+                    anodizedColor = new THREE.Color(1, 0.8, 0); // Gold tint
+                    break;
+                case 4: // Purple anodized
+                    anodizedColor = new THREE.Color(0.5, 0, 1); // Purple tint
+                    break;
+                case 5: // Black anodized
+                    anodizedColor = new THREE.Color(0.2, 0.2, 0.2); // Dark tint
+                    break;
+                default:
+                    anodizedColor = new THREE.Color(1, 1, 1); // Default to natural
+                    break;
+            }
+
+            // Apply anodization color to titanium parts
+            const titaniumParts = [
+                'Top Plate 1', 'Top Plate 2', 'Top Plate 3', 'Top Handle Nut', 'Top Handle Bolt',
+                'Center Handle Nut', 'Center Handle Bolt', 'Bottom Handle Nut', 'Bottom Handle Bolt',
+                'Cover Plate', 'Cover Plate Screw L', 'Cover Plate Screw R', 'Center', 'Bottom Plate 1', 'Bottom Plate 2'
+            ];
+
+            titaniumParts.forEach(partName => {
+                model.traverse(function (child) {
+                    if (child.isMesh && child.name === partName) {
+                        child.material.color.set(anodizedColor);
+                        child.material.needsUpdate = true;
+                    }
+                });
+            });
+        }
+
+        // Event listeners for texture changes
+        document.getElementById('textureHandleTop').addEventListener('change', function () {
+            changeWoodTexture('Handle top', this.value);
+        });
+        document.getElementById('textureHandleBottom').addEventListener('change', function () {
+            changeWoodTexture('Handle Bottom', this.value);
+        });
+        // Add more event listeners for other wood components if needed
+
+        // Event listener for titanium color change
+        document.getElementById('titaniumColor').addEventListener('change', function () {
+            changeTitaniumColor(parseInt(this.value, 10));
+        });
+
+        // Render the scene
         function render() {
             requestAnimationFrame(render);
-            controls.update();  // Update controls for rotation and interactivity
+            controls.update();
             renderer.render(scene, camera);
         }
 
-        // Resize handling to keep responsive layout
+        // Handle window resizing
         window.addEventListener('resize', () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
             camera.aspect = window.innerWidth / window.innerHeight;
