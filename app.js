@@ -25,13 +25,20 @@ scene.add(directionalLight);
 const loader = new THREE.GLTFLoader();
 let ratchetModel;
 
-loader.load(`${BASE_URL}/models/Ratchet.gltf`, (gltf) => {
-    ratchetModel = gltf.scene;
-    scene.add(ratchetModel);
-    animate();
-}, undefined, (error) => {
-    console.error('Error loading model:', error);
-});
+// Load the model and log its hierarchy
+loader.load(
+    `${BASE_URL}/models/Ratchet.gltf`,
+    (gltf) => {
+        ratchetModel = gltf.scene;
+        scene.add(ratchetModel);
+        logModelHierarchy(ratchetModel); // Log the hierarchy for debugging
+        animate();
+    },
+    undefined,
+    (error) => {
+        console.error('Error loading model:', error);
+    }
+);
 
 // Texture Loader
 const textureLoader = new THREE.TextureLoader();
@@ -40,7 +47,8 @@ const textureLoader = new THREE.TextureLoader();
 function changeTexture(partName, texturePath) {
     const texture = textureLoader.load(`${BASE_URL}/textures/${texturePath}`);
     ratchetModel.traverse((object) => {
-        if (object.isMesh && object.material.name === partName) {
+        // Ensure the object is a Mesh and has a valid material
+        if (object.isMesh && object.material && object.material.name === partName) {
             object.material.map = texture;
             object.material.needsUpdate = true;
         }
@@ -50,9 +58,20 @@ function changeTexture(partName, texturePath) {
 // Function to Change Color
 function changeColor(partName, hexColor) {
     ratchetModel.traverse((object) => {
-        if (object.isMesh && object.material.name === partName) {
+        // Ensure the object is a Mesh and has a valid material
+        if (object.isMesh && object.material && object.material.name === partName) {
             object.material.color.setHex(hexColor);
             object.material.needsUpdate = true;
+        }
+    });
+}
+
+// Function to Log the Model's Hierarchy for Debugging
+function logModelHierarchy(model) {
+    model.traverse((object) => {
+        console.log(`Name: ${object.name}, Type: ${object.type}`);
+        if (object.material) {
+            console.log(`  Material Name: ${object.material.name}`);
         }
     });
 }
