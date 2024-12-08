@@ -4,191 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Product Viewer</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
-        #3dViewer {
-            width: 100%;
-            height: 100vh;
-        }
-        #textureSelector {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 10;
-            background-color: white;
-            padding: 10px;
-        }
-        select {
-            margin: 5px;
-        }
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 10px; left: 10px; background: rgba(255, 255, 255, 0.8); padding: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
-    <div id="3dViewer"></div>
-    <div id="textureSelector">
-        <label for="handleTopTexture">Handle Top Texture:</label>
-        <select id="handleTopTexture">
-            <option value="0">Black Walnut</option>
-            <option value="1">Burl1</option>
-            <option value="2">Hickory</option>
-            <option value="3">Mahogany</option>
-            <option value="4">Oak</option>
-            <option value="5">Purpleheart</option>
+    <div id="ui">
+        <h3>Customize Your Product</h3>
+        <label for="handle-top-texture">Handle Top Texture:</label>
+        <select id="handle-top-texture">
+            <option value="Black_Walnut.jpg">Black Walnut</option>
+            <option value="Hickory.jpg">Hickory</option>
+            <option value="Mahogany.jpg">Mahogany</option>
+            <option value="Oak.jpg">Oak</option>
+            <option value="Purpleheart.jpg">Purpleheart</option>
+            <option value="burl1.jpg">Burl 1</option>
+            <option value="burl2.jpg">Burl 2</option>
         </select>
-
-        <label for="handleBottomTexture">Handle Bottom Texture:</label>
-        <select id="handleBottomTexture">
-            <option value="0">Black Walnut</option>
-            <option value="1">Burl1</option>
-            <option value="2">Hickory</option>
-            <option value="3">Mahogany</option>
-            <option value="4">Oak</option>
-            <option value="5">Purpleheart</option>
-        </select>
-
-        <label for="caseTopTexture">Case Top Texture:</label>
-        <select id="caseTopTexture">
-            <option value="0">Black Walnut</option>
-            <option value="1">Burl1</option>
-            <option value="2">Hickory</option>
-            <option value="3">Mahogany</option>
-            <option value="4">Oak</option>
-            <option value="5">Purpleheart</option>
-        </select>
-
-        <label for="caseBottomTexture">Case Bottom Texture:</label>
-        <select id="caseBottomTexture">
-            <option value="0">Black Walnut</option>
-            <option value="1">Burl1</option>
-            <option value="2">Hickory</option>
-            <option value="3">Mahogany</option>
-            <option value="4">Oak</option>
-            <option value="5">Purpleheart</option>
-        </select>
+        <br><br>
+        <label for="bottom-handle-bolt-color">Bottom Handle Bolt Color:</label>
+        <input type="color" id="bottom-handle-bolt-color" value="#0000FF">
     </div>
-
-    <script>
-        // Set up Three.js scene
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('3dViewer').appendChild(renderer.domElement);
-
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.25;
-        controls.screenSpacePanning = false;
-        controls.maxPolarAngle = Math.PI / 2;
-
-        // Add lighting to the scene
-        const light = new THREE.AmbientLight(0x404040, 5);  // Ambient light
-        scene.add(light);
-
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Directional light
-        directionalLight.position.set(5, 5, 5).normalize();
-        scene.add(directionalLight);
-
-        // Load the model
-        const loader = new THREE.GLTFLoader();
-        let model;
-
-        loader.load(
-            'https://dudespec.github.io/3d-product-viewer/models/Ratchet.gltf',  // Model URL
-            function(gltf) {
-                model = gltf.scene;
-                scene.add(model);
-
-                // Grab the materials for each part of the model by their names
-                const handleTopMaterial = model.getObjectByName('Handle top').material; // Handle Top
-                const handleBottomMaterial = model.getObjectByName('Handle Bottom').material; // Handle Bottom
-                const caseTopMaterial = model.getObjectByName('Case Top').material; // Case Top
-                const caseBottomMaterial = model.getObjectByName('Case Bottom').material; // Case Bottom
-
-                // Function to switch textures for a given part's material
-                function setTextureForPart(part, textureIndex) {
-                    if (part === 'Handle top') {
-                        handleTopMaterial.BlackWalnut_Factor = (textureIndex === 0) ? 1 : 0;
-                        handleTopMaterial.Burl1_Factor = (textureIndex === 1) ? 1 : 0;
-                        handleTopMaterial.Hickory_Factor = (textureIndex === 2) ? 1 : 0;
-                        handleTopMaterial.Mahogany_Factor = (textureIndex === 3) ? 1 : 0;
-                        handleTopMaterial.Oak_Factor = (textureIndex === 4) ? 1 : 0;
-                        handleTopMaterial.Purpleheart_Factor = (textureIndex === 5) ? 1 : 0;
-                    } else if (part === 'Handle Bottom') {
-                        handleBottomMaterial.BlackWalnut_Factor = (textureIndex === 0) ? 1 : 0;
-                        handleBottomMaterial.Burl1_Factor = (textureIndex === 1) ? 1 : 0;
-                        handleBottomMaterial.Hickory_Factor = (textureIndex === 2) ? 1 : 0;
-                        handleBottomMaterial.Mahogany_Factor = (textureIndex === 3) ? 1 : 0;
-                        handleBottomMaterial.Oak_Factor = (textureIndex === 4) ? 1 : 0;
-                        handleBottomMaterial.Purpleheart_Factor = (textureIndex === 5) ? 1 : 0;
-                    } else if (part === 'Case Top') {
-                        caseTopMaterial.BlackWalnut_Factor = (textureIndex === 0) ? 1 : 0;
-                        caseTopMaterial.Burl1_Factor = (textureIndex === 1) ? 1 : 0;
-                        caseTopMaterial.Hickory_Factor = (textureIndex === 2) ? 1 : 0;
-                        caseTopMaterial.Mahogany_Factor = (textureIndex === 3) ? 1 : 0;
-                        caseTopMaterial.Oak_Factor = (textureIndex === 4) ? 1 : 0;
-                        caseTopMaterial.Purpleheart_Factor = (textureIndex === 5) ? 1 : 0;
-                    } else if (part === 'Case Bottom') {
-                        caseBottomMaterial.BlackWalnut_Factor = (textureIndex === 0) ? 1 : 0;
-                        caseBottomMaterial.Burl1_Factor = (textureIndex === 1) ? 1 : 0;
-                        caseBottomMaterial.Hickory_Factor = (textureIndex === 2) ? 1 : 0;
-                        caseBottomMaterial.Mahogany_Factor = (textureIndex === 3) ? 1 : 0;
-                        caseBottomMaterial.Oak_Factor = (textureIndex === 4) ? 1 : 0;
-                        caseBottomMaterial.Purpleheart_Factor = (textureIndex === 5) ? 1 : 0;
-                    }
-
-                    // Make sure to update the materials after changing the Factor values
-                    handleTopMaterial.needsUpdate = true;
-                    handleBottomMaterial.needsUpdate = true;
-                    caseTopMaterial.needsUpdate = true;
-                    caseBottomMaterial.needsUpdate = true;
-                }
-
-                // UI listeners for texture changes
-                document.getElementById('handleTopTexture').addEventListener('change', function () {
-                    const textureIndex = parseInt(this.value);
-                    setTextureForPart('Handle top', textureIndex);
-                });
-                document.getElementById('handleBottomTexture').addEventListener('change', function () {
-                    const textureIndex = parseInt(this.value);
-                    setTextureForPart('Handle Bottom', textureIndex);
-                });
-                document.getElementById('caseTopTexture').addEventListener('change', function () {
-                    const textureIndex = parseInt(this.value);
-                    setTextureForPart('Case Top', textureIndex);
-                });
-                document.getElementById('caseBottomTexture').addEventListener('change', function () {
-                    const textureIndex = parseInt(this.value);
-                    setTextureForPart('Case Bottom', textureIndex);
-                });
-
-                render();
-            },
-            undefined,
-            function(error) {
-                console.error("Error loading model:", error);
-            }
-        );
-
-        // Render the scene
-        function render() {
-            requestAnimationFrame(render);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-
-        // Handle window resizing
-        window.addEventListener('resize', () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
