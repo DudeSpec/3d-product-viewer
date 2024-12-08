@@ -87,10 +87,10 @@
         controls.maxPolarAngle = Math.PI / 2;
 
         // Lighting
-        const light = new THREE.AmbientLight(0x404040, 5);
-        scene.add(light);
+        const ambientLight = new THREE.AmbientLight(0x404040, 2); // Dim ambient light
+        scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
         directionalLight.position.set(5, 5, 5).normalize();
         scene.add(directionalLight);
 
@@ -112,8 +112,10 @@
 
         loader.load('https://dudespec.github.io/3d-product-viewer/models/Ratchet.gltf', function(gltf) {
             model = gltf.scene;
+            model.scale.set(0.25, 0.25, 0.25); // Scale down the model to fit in view
             scene.add(model);
-            camera.position.set(0, 1, 5);
+            camera.position.set(0, 1, 5); // Position camera appropriately
+            controls.target.set(0, 1, 0); // Set the point of rotation
             render();
         });
 
