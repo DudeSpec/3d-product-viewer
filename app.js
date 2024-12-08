@@ -1,22 +1,22 @@
-// Setup for Three.js
+// Initialize scene, camera, and renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('3dViewer').appendChild(renderer.domElement);
 
-// Orbit Controls for interactivity
+// OrbitControls for interactivity
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
 controls.screenSpacePanning = false;
 controls.maxPolarAngle = Math.PI / 2;
 
-// Lighting
-const ambientLight = new THREE.AmbientLight(0x404040, 2); // Dim ambient light
-scene.add(ambientLight);
+// Lighting setup
+const light = new THREE.AmbientLight(0x404040, 5);  // Ambient light to help visibility
+scene.add(light);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Directional light
 directionalLight.position.set(5, 5, 5).normalize();
 scene.add(directionalLight);
 
@@ -38,10 +38,9 @@ let model;
 
 loader.load('https://dudespec.github.io/3d-product-viewer/models/Ratchet.gltf', function(gltf) {
     model = gltf.scene;
-    model.scale.set(10, 10, 10); // Scale up the model (adjust as needed)
     scene.add(model);
-    camera.position.set(0, 3, 10); // Move camera further away for better view
-    controls.target.set(0, 3, 0); // Set the point of rotation
+    model.scale.set(2, 2, 2);  // Scale up the model if it's too small
+    camera.position.set(0, 1, 5);  // Set camera position to view the model clearly
     render();
 });
 
@@ -92,7 +91,7 @@ function updateTitaniumMaterial(colorIndex) {
     });
 }
 
-// Event listeners for dropdown menus
+// Event listeners for dropdown menus to change wood textures
 document.getElementById('handleTopWood').addEventListener('change', function(event) {
     const textureIndex = parseInt(event.target.value);
     updatePartMaterial('Handle Top', textureIndex);
@@ -103,8 +102,9 @@ document.getElementById('handleBottomWood').addEventListener('change', function(
     updatePartMaterial('Handle Bottom', textureIndex);
 });
 
-// Add more event listeners for other parts...
+// Add more event listeners for other parts if needed...
 
+// Event listener for titanium color change
 document.getElementById('titaniumOption').addEventListener('change', function(event) {
     const colorIndex = parseInt(event.target.value);
     updateTitaniumMaterial(colorIndex);
@@ -113,9 +113,13 @@ document.getElementById('titaniumOption').addEventListener('change', function(ev
 // Render loop
 function render() {
     requestAnimationFrame(render);
-    controls.update();  // Update controls for rotation
+    controls.update();  // Update controls for rotation and interactivity
     renderer.render(scene, camera);
 }
-</script>
-</body>
-</html>
+
+// Resize handling to keep responsive layout
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+});
