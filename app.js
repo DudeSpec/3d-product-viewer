@@ -13,33 +13,35 @@ controls.screenSpacePanning = false;
 controls.maxPolarAngle = Math.PI / 2;
 
 // Lighting
-const light = new THREE.AmbientLight(0x404040, 5);
-scene.add(light);
+const ambientLight = new THREE.AmbientLight(0x404040, 2); // Dim ambient light
+scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
 directionalLight.position.set(5, 5, 5).normalize();
 scene.add(directionalLight);
 
 // Load textures for wood
 const textureLoader = new THREE.TextureLoader();
 const woodTextures = [
-    textureLoader.load('textures/Black_Walnut.jpg'),
-    textureLoader.load('textures/burl1.jpg'),
-    textureLoader.load('textures/burl2.jpg'),
-    textureLoader.load('textures/Hickory.jpg'),
-    textureLoader.load('textures/Mahogany.jpg'),
-    textureLoader.load('textures/Oak.jpg'),
-    textureLoader.load('textures/Purpleheart.jpg')
+    textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Black_Walnut.jpg'),
+    textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/burl1.jpg'),
+    textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/burl2.jpg'),
+    textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Hickory.jpg'),
+    textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Mahogany.jpg'),
+    textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Oak.jpg'),
+    textureLoader.load('https://dudespec.github.io/3d-product-viewer/textures/Purpleheart.jpg')
 ];
 
 // Load model using GLTFLoader
 const loader = new THREE.GLTFLoader();
 let model;
 
-loader.load('models/Ratchet.gltf', function(gltf) {
+loader.load('https://dudespec.github.io/3d-product-viewer/models/Ratchet.gltf', function(gltf) {
     model = gltf.scene;
+    model.scale.set(10, 10, 10); // Scale up the model (adjust as needed)
     scene.add(model);
-    camera.position.set(0, 1, 5);
+    camera.position.set(0, 3, 10); // Move camera further away for better view
+    controls.target.set(0, 3, 0); // Set the point of rotation
     render();
 });
 
@@ -114,3 +116,6 @@ function render() {
     controls.update();  // Update controls for rotation
     renderer.render(scene, camera);
 }
+</script>
+</body>
+</html>
