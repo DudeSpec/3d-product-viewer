@@ -1,3 +1,8 @@
+// Import required modules from Three.js
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/controls/OrbitControls.js';
+
 // Base URL for GitHub-hosted assets
 const BASE_URL = "https://dudespec.github.io/3d-product-viewer";
 
@@ -8,8 +13,8 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Controls
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
+// OrbitControls
+const controls = new OrbitControls(camera, renderer.domElement);
 camera.position.set(0, 2, 5);
 controls.update();
 
@@ -22,10 +27,9 @@ directionalLight.position.set(5, 10, 7.5);
 scene.add(directionalLight);
 
 // Load Model
-const loader = new THREE.GLTFLoader();
+const loader = new GLTFLoader();
 let ratchetModel;
 
-// Load the model and log its hierarchy
 loader.load(
     `${BASE_URL}/models/Ratchet.gltf`,
     (gltf) => {
